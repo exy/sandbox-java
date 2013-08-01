@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,31 +26,36 @@ public class UserDaoImpl implements UserDao {
 
 	@SuppressWarnings(value = {"unused" })
 	private NamedParameterJdbcTemplate namedJdbcTemplate;
+	
+	@Resource(name="jdbcTemplate")
 	private JdbcTemplate jdbcTemplate;
 	
+	/*
 	@Resource(name="monDataSource")
 	public void setDataSource(DataSource dataSource) {
 		namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
+	*/
 	
 	@Override
 	public List<UserDto> getUsers() {
+		log.debug("getUsers()");
 		String sql = "select * from login";
 		return jdbcTemplate.query(sql, new UserMapper());
 	}
 	
 	private static final class UserMapper implements RowMapper<UserDto>{
 
+		@Resource(name="userDto")
+		private UserDto userDto;
+		
 		@Override
 		public UserDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-			UserDto user = new UserDto();
-			user.setName(rs.getString("name"));
-			user.setLogin(rs.getString("login"));
-			user.setPassword(rs.getString("password"));
-			return user;
+			userDto.setName(rs.getString("name"));
+			userDto.setLogin(rs.getString("login"));
+			userDto.setPassword(rs.getString("password"));
+			return userDto;
 		}
-		
 	}
-
 }
