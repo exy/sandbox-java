@@ -30,28 +30,19 @@ public class UserDaoImpl implements UserDao {
 	@Resource(name="jdbcTemplate")
 	private JdbcTemplate jdbcTemplate;
 	
-	/*
-	@Resource(name="monDataSource")
-	public void setDataSource(DataSource dataSource) {
-		namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-	*/
-	
 	@Override
 	public List<UserDto> getUsers() {
-		log.debug("getUsers()");
 		String sql = "select * from login";
-		return jdbcTemplate.query(sql, new UserMapper());
+		List<UserDto> list = jdbcTemplate.query(sql, new UserMapper());
+		log.debug("get : " + list.size() + " users");
+		return list;
 	}
 	
 	private static final class UserMapper implements RowMapper<UserDto>{
 
-		@Resource(name="userDto")
-		private UserDto userDto;
-		
 		@Override
 		public UserDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+			UserDto userDto = new UserDto();
 			userDto.setName(rs.getString("name"));
 			userDto.setLogin(rs.getString("login"));
 			userDto.setPassword(rs.getString("password"));

@@ -1,8 +1,6 @@
 package org.alexis.mon1erMvc.dao;
 
-import org.springframework.stereotype.Component;
 
-@Component(value="userDto")
 public class UserDto {
 
 	private String name;
